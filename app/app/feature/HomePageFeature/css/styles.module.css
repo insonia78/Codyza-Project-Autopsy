@@ -1,0 +1,35 @@
+
+.home-page-container {
+    padding-top:2em;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    align-items: baseline;
+    justify-content: center;
+    height: auto;
+    min-height: 10em;
+    width:100%;
+}
+.repository-name-container{
+    display:flex; 
+    flex-direction: column;
+    min-height: 3em;
+    height:auto;
+}
+.github-token-container{
+    display:flex;    
+    flex-direction: column;
+    height:auto;
+}
+.input {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+}
+.error-text{
+    color: red;
+    font-size: 0.875em; /* 14px */
+    margin-top: 4px;
+    height:auto;
+    min-height: 3em;
+}

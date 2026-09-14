@@ -1,30 +1,76 @@
-'use client'
-import { useRef } from 'react'
-import { useAppSelector, useAppDispatch, useAppStore } from '../../../lib/hooks'
-import { setRepositoryName, setGitHubToken } from '@/lib/features/homepageslice';
+"use client"
+import { useRef, useState } from 'react'
+import styles from './css/styles.module.css'
+import { useAppDispatch } from '../../../lib/hooks'
+import { handleAnalyze } from './functions'
+import Button from '@/app/components/Ui/Button'
 export const HomePageFeature = () => {
-const store = useAppStore()
-  const initialized = useRef(false)
-  if (!initialized.current) {
-    // store.dispatch(initializeProduct(product))
-    initialized.current = true
-  }
-  const name = useAppSelector(state => state.homePage.repositoryName)
-  const dispatch = useAppDispatch()
+
+    const repositoryName = null
+    const repositoryNameRef = useRef(repositoryName)
+    const githubToken = null
+    const githubTokenRef = useRef(githubToken)
+    const dispatch = useAppDispatch();
+    const [errors, setErrors] = useState<string[]>([])
 
 
     return (
-        <div>
-            <input
-                type="text"
-                value={name}
-                onChange={(e) => dispatch(setRepositoryName(e.target.value))}
-            /> 
-            <input
-                type="text"
-                value={useAppSelector(state => state.homePage.githubToken)}
-                onChange={(e) => dispatch(setGitHubToken(e.target.value))}
-            /> f
+        <div className={styles['home-page-container']}>
+            <div className={styles['repository-name-container']}>
+                <input
+                    type="text"
+                    ref={repositoryNameRef}
+                    className={styles.input}
+                    placeholder="Repository Name"
+                />
+                <p className={styles['error-text']}>
+                    {errors.find((e) => e.includes('Repository'))}
+                </p>
+            </div>
+            <div className={styles['github-token-container']}>
+                <input
+                    type="text"
+                    ref={githubTokenRef}
+                    placeholder="GitHub Token"
+                    className={styles.input}
+                />
+                <p className={styles['error-text']}>
+                    {errors.find((e) => e.includes('GitHub Token'))}
+                </p>
+            </div>
+            <Button
+                variant="primary"
+                size="md"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    const result = handleAnalyze(e, dispatch, repositoryNameRef, githubTokenRef)
+                    if (Array.isArray(result) && result.length > 0) {
+                        console.log(result)
+                        setErrors(result)
+                    } else {
+                        setErrors([])
+                    }
+                }}
+            >
+                Analyze
+            </Button>
+
+            <Button
+                variant="secondary"
+                size="md"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    if(repositoryNameRef?.current) {
+                        repositoryNameRef.current.value = ''
+                    }
+                    if(githubTokenRef?.current) {
+                        githubTokenRef.current.value = ''
+                    }
+                    setErrors([])
+                }}
+            >
+                Clear
+            </Button>
+            
+            
         </div>
     );
 };  

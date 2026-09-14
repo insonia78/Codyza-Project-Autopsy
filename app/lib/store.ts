@@ -1,8 +1,13 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import homePageReducer from './features/homepageslice'
+
+const rootReducer = combineReducers({
+  homePage: homePageReducer,
+})
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {}
+    reducer: rootReducer,
   })
 }
 
@@ -11,3 +16,5 @@ export type AppStore = ReturnType<typeof makeStore>
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<AppStore['getState']>
 export type AppDispatch = AppStore['dispatch']
+
+

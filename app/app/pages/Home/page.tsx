@@ -1,10 +1,10 @@
 import { HomePageFeature } from "@/app/feature/HomePageFeature";
+import styles from "./css/styles.module.css";
 
 const HomePage = () => {
     return (
-        <div>
-            Home Page
-            <HomePageFeature />
+        <div className={styles["home-page-container"]}>
+           <HomePageFeature />
         </div>
     );
 };
