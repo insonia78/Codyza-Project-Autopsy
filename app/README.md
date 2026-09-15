@@ -36,3 +36,22 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 this is  a test for the ci/cd pipeline 
+
+## Supabase
+
+This project includes a small Supabase helper in `lib/supabaseClient.ts` and a hook `lib/useSupabase.tsx` for client components.
+
+Before running the app, set the following environment variables (the values will be used in the browser):
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Example (Windows PowerShell):
+
+```powershell
+$env:NEXT_PUBLIC_SUPABASE_URL = "https://your-project-id.supabase.co"
+$env:NEXT_PUBLIC_SUPABASE_ANON_KEY = "your-anon-key"
+npm run dev
+```
+
+The app will throw a clear error if those variables are not present when the Supabase client is first created.

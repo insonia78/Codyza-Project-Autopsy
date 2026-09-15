@@ -13,70 +13,85 @@ export const HomePageFeature = () => {
 
     return (
         <div className={styles['home-page-container']}>
-            <div className={styles['repository-name-container']}>
-                <input
-                    type="text"
-                    name="repositoryName"
-                    ref={repositoryNameRef}
-                    className={styles.input}
-                    placeholder="Repository Name"
-                />
-                <p className={styles['error-text']}>
-                    {errors.find((e) => e.includes('Repository'))}
-                </p>
-            </div>
-            <div className={styles['github-token-container']}>
-                <input
-                    type="text"
-                    name="githubToken"
-                    ref={githubTokenRef}
-                    placeholder="GitHub Token"
-                    className={styles.input}
-                />
-                <p className={styles['error-text']}>
-                    {errors.find((e) => e.includes('GitHub Token'))}
-                </p>
-            </div>
-            <Button
-                name="analyzeButton"
-                variant="primary"
-                size="md"
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            <form
+                className={styles['home-form']}
+                onSubmit={(e) => {
                     const result = handleAnalyze(e, dispatch, repositoryNameRef, githubTokenRef)
                     if (Array.isArray(result) && result.length > 0) {
-                        console.log(result)
                         setErrors(result)
                     } else {
                         setErrors([])
                     }
                 }}
+                aria-labelledby="homeform-heading"
             >
-                Analyze
-            </Button>
+                <h2 id="homeform-heading" className={styles['visually-hidden']}>Home analysis form</h2>
 
-            <Button
-                name="clearButton"
-                variant="secondary"
-                size="md"
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                    if(repositoryNameRef?.current) {
-                        if (typeof repositoryNameRef.current.value === 'string' && repositoryNameRef.current.value !== 'never') {
-                            repositoryNameRef.current.value = ''
+                <div className={styles['repository-name-container']}>
+                    <label htmlFor="repositoryNameInput">Repository Name</label>
+                    <input
+                        id="repositoryNameInput"
+                        type="text"
+                        name="repositoryName"
+                        ref={repositoryNameRef}
+                        className={styles.input}
+                        placeholder="Repository Name"
+                        aria-invalid={errors.some(e => e.includes('Repository'))}
+                        aria-describedby={errors.some(e => e.includes('Repository')) ? 'repository-error' : undefined}
+                    />
+                    <p id="repository-error" className={styles['error-text']} role="alert" aria-live="polite">
+                        {errors.find((e) => e.includes('Repository'))}
+                    </p>
+                </div>
+
+                <div className={styles['github-token-container']}>
+                    <label htmlFor="githubTokenInput">GitHub Token</label>
+                    <input
+                        id="githubTokenInput"
+                        type="text"
+                        name="githubToken"
+                        ref={githubTokenRef}
+                        placeholder="GitHub Token"
+                        className={styles.input}
+                        aria-invalid={errors.some(e => e.includes('GitHub Token'))}
+                        aria-describedby={errors.some(e => e.includes('GitHub Token')) ? 'token-error' : undefined}
+                    />
+                    <p id="token-error" className={styles['error-text']} role="alert" aria-live="polite">
+                        {errors.find((e) => e.includes('GitHub Token'))}
+                    </p>
+                </div>
+
+                <Button
+                    name="analyzeButton"
+                    variant="primary"
+                    size="md"
+                    type="submit"
+                >
+                    Analyze
+                </Button>
+
+                <Button
+                    name="clearButton"
+                    variant="secondary"
+                    size="md"
+                    type="button"
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        if(repositoryNameRef?.current) {
+                            if (typeof repositoryNameRef.current.value === 'string' && repositoryNameRef.current.value !== 'never') {
+                                repositoryNameRef.current.value = ''
+                            }
                         }
-                        
-                    }
-                    if(githubTokenRef?.current) {
-                        if (typeof githubTokenRef.current.value === 'string' && githubTokenRef.current.value !== 'never') {
-                            githubTokenRef.current.value = ''
+                        if(githubTokenRef?.current) {
+                            if (typeof githubTokenRef.current.value === 'string' && githubTokenRef.current.value !== 'never') {
+                                githubTokenRef.current.value = ''
+                            }
                         }
-                    }
-                    setErrors([])
-                }}
-            >
-                Clear
-            </Button>
-            
-            
+                        setErrors([])
+                    }}
+                >
+                    Clear
+                </Button>
+            </form>
         </div>
     );
 };  

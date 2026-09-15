@@ -3,12 +3,12 @@ import { setRepositoryName, setGitHubToken } from '@/lib/features/homepageslice'
 import schema from './validator'
 
 export function handleAnalyze(
-    e: React.MouseEvent<HTMLButtonElement>,
-    dispatch: any,
-    repositoryNameRef: any,
-    githubTokenRef: any
+  e: React.FormEvent | React.MouseEvent<HTMLButtonElement>,
+  dispatch: any,
+  repositoryNameRef: any,
+  githubTokenRef: any
 ) {
-    e.preventDefault()
+  e.preventDefault()
 
     const repositoryName = repositoryNameRef?.current?.value ?? ''
     const githubToken = githubTokenRef?.current?.value ?? ''
