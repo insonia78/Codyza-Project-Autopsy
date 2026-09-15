@@ -1,15 +1,12 @@
 "use client"
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styles from './css/styles.module.css'
 import { useAppDispatch } from '../../../lib/hooks'
 import { handleAnalyze } from './functions'
 import Button from '@/app/components/Ui/Button'
 export const HomePageFeature = () => {
-
-    const repositoryName = null
-    const repositoryNameRef = useRef(repositoryName)
-    const githubToken = null
-    const githubTokenRef = useRef(githubToken)
+    const repositoryNameRef = useRef<HTMLInputElement | null>(null)
+    const githubTokenRef = useRef<HTMLInputElement | null>(null)
     const dispatch = useAppDispatch();
     const [errors, setErrors] = useState<string[]>([])
 
@@ -19,6 +16,7 @@ export const HomePageFeature = () => {
             <div className={styles['repository-name-container']}>
                 <input
                     type="text"
+                    name="repositoryName"
                     ref={repositoryNameRef}
                     className={styles.input}
                     placeholder="Repository Name"
@@ -30,6 +28,7 @@ export const HomePageFeature = () => {
             <div className={styles['github-token-container']}>
                 <input
                     type="text"
+                    name="githubToken"
                     ref={githubTokenRef}
                     placeholder="GitHub Token"
                     className={styles.input}
@@ -39,6 +38,7 @@ export const HomePageFeature = () => {
                 </p>
             </div>
             <Button
+                name="analyzeButton"
                 variant="primary"
                 size="md"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,14 +55,20 @@ export const HomePageFeature = () => {
             </Button>
 
             <Button
+                name="clearButton"
                 variant="secondary"
                 size="md"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                     if(repositoryNameRef?.current) {
-                        repositoryNameRef.current.value = ''
+                        if (typeof repositoryNameRef.current.value === 'string' && repositoryNameRef.current.value !== 'never') {
+                            repositoryNameRef.current.value = ''
+                        }
+                        
                     }
                     if(githubTokenRef?.current) {
-                        githubTokenRef.current.value = ''
+                        if (typeof githubTokenRef.current.value === 'string' && githubTokenRef.current.value !== 'never') {
+                            githubTokenRef.current.value = ''
+                        }
                     }
                     setErrors([])
                 }}
