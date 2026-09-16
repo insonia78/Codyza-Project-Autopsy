@@ -7,8 +7,12 @@ export class HomePageFeature {
         this.#page = page;
     } 
     async navigateToHomePage() {
-        await this.#page.goto('http://localhost:3000/');
+        const url: string = process.env.NEXT_PUBLIC_PLAYWRIGHT_URL && process.env.NEXT_PUBLIC_PLAYWRIGHT_URL.length > 0
+            ? process.env.NEXT_PUBLIC_PLAYWRIGHT_URL
+            : '/';
+        await this.#page.goto(url);
     }
+
     async clickAnalyzeButton() {
         await this.#page.getByRole('button', { name: 'Analyze' }).click();
     }
