@@ -23,7 +23,7 @@ export function handleAnalyze(
     return []
 }
 
-function validateHomeForm(values: { repositoryName?: string; githubToken?: string | null }) {
+export function validateHomeForm(values: { repositoryName?: string; githubToken?: string | null }) {
   try {
     schema.validateSync(values, { abortEarly: false })
     return [] as string[]
