@@ -4,6 +4,10 @@ import styles from './css/styles.module.css'
 import { useAppDispatch } from '../../../lib/hooks'
 import { handleAnalyze } from './functions'
 import Button from '@/app/components/Ui/Button'
+import { getRepo } from './server/actions'
+
+
+
 export const HomePageFeature = () => {
     const repositoryNameRef = useRef<HTMLInputElement | null>(null)
     const githubTokenRef = useRef<HTMLInputElement | null>(null)
@@ -22,6 +26,7 @@ export const HomePageFeature = () => {
                     ref={repositoryNameRef}
                     className={styles.input}
                     placeholder="Repository Name"
+                    suppressHydrationWarning
                     aria-invalid={!!errors.find((e) => e.toLowerCase().includes('repository'))}
                     aria-describedby={errors.find((e) => e.toLowerCase().includes('repository')) ? 'repository-error' : undefined}
                 />
@@ -38,6 +43,7 @@ export const HomePageFeature = () => {
                     ref={githubTokenRef}
                     placeholder="GitHub Token"
                     className={styles.input}
+                    suppressHydrationWarning
                     aria-invalid={!!errors.find((e) => e.toLowerCase().includes('github token'))}
                     aria-describedby={errors.find((e) => e.toLowerCase().includes('github token')) ? 'githubToken-error' : undefined}
                 />
@@ -51,13 +57,16 @@ export const HomePageFeature = () => {
                     type="button"
                     variant="primary"
                     size="md"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    suppressHydrationWarning
+                    onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
                         const result = handleAnalyze(e, dispatch, repositoryNameRef, githubTokenRef)
                         if (Array.isArray(result) && result.length > 0) {
                             console.log(result)
                             setErrors(result)
                         } else {
                             setErrors([])
+                            // Call the server action to get the repository
+                            await getRepo(repositoryNameRef?.current?.value, githubTokenRef?.current?.value)
                         }
                     }}
                 >
@@ -69,6 +78,7 @@ export const HomePageFeature = () => {
                     type="button"
                     variant="secondary"
                     size="md"
+                    suppressHydrationWarning
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         if (repositoryNameRef?.current) {
                             repositoryNameRef.current.value = ''
