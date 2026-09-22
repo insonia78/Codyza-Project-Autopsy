@@ -1,5 +1,6 @@
 
-
+import AiTokenFieldsComponent from '../components/AiTokenFieldsComponent'
+import styles from './styles.module.css'
 type Props = {
 	children: React.ReactNode
 }
@@ -7,11 +8,10 @@ type Props = {
 export default function HomeLayout({ children }: Props) {
 
 	return (
-		<div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-			<section style={{ flex: 1 }}>
+		<section style={{ flex: 1 }}>
 				{children}
-			</section>
-		</div>
+		</section>
+		
 
 
 	)
