@@ -1,18 +1,31 @@
 "use client"
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './css/styles.module.css'
-import { useAppDispatch } from '../../../lib/hooks'
+import { useAppDispatch, useAppSelector } from '../../../lib/hooks'
 import { handleAnalyze } from './functions'
 import Button from '@/app/components/Ui/Button'
 import { getRepo } from './server/actions'
+import { setErrors, setValue } from '@/lib/features/homepageslice'
 
 
 
 export const HomePageFeature = () => {
     const repositoryNameRef = useRef<HTMLInputElement | null>(null)
     const githubTokenRef = useRef<HTMLInputElement | null>(null)
+    const value = useAppSelector((s) => s.homePage?.value || {})
+    const errors = useAppSelector((s) => s.homePage?.errors || {})
     const dispatch = useAppDispatch();
-    const [errors, setErrors] = useState<string[]>([])
+    
+
+     useEffect(() => {
+         // This runs only on the client after hydration
+         
+          
+               setValue({ key: 'repositoryName', value: repositoryNameRef });
+               setValue({ key: 'githubToken', value: githubTokenRef });
+          
+       }, []);
+
 
 
     return (
@@ -26,12 +39,10 @@ export const HomePageFeature = () => {
                     ref={repositoryNameRef}
                     className={styles.input}
                     placeholder="Repository Name"
-                    suppressHydrationWarning
-                    aria-invalid={!!errors.find((e) => e.toLowerCase().includes('repository'))}
-                    aria-describedby={errors.find((e) => e.toLowerCase().includes('repository')) ? 'repository-error' : undefined}
+                    
                 />
                 <p id="repository-error" className={styles['error-text']} role="alert" aria-live="assertive">
-                    {errors.find((e) => e.toLowerCase().includes('repository'))}
+                    {errors?.repositoryName && <span style={{ color: 'red', fontSize: 12 }}>{errors.repositoryName}</span>}
                 </p>
             </div>
             <div className={styles['github-token-container']}>
@@ -43,12 +54,10 @@ export const HomePageFeature = () => {
                     ref={githubTokenRef}
                     placeholder="GitHub Token"
                     className={styles.input}
-                    suppressHydrationWarning
-                    aria-invalid={!!errors.find((e) => e.toLowerCase().includes('github token'))}
-                    aria-describedby={errors.find((e) => e.toLowerCase().includes('github token')) ? 'githubToken-error' : undefined}
+                    
                 />
                 <p id="githubToken-error" className={styles['error-text']} role="alert" aria-live="assertive">
-                    {errors.find((e) => e.toLowerCase().includes('github token'))}
+                    {errors?.githubToken && <span style={{ color: 'red', fontSize: 12 }}>{errors.githubToken}</span>}
                 </p>
             </div>
             <div className={styles['button-container']}>
@@ -57,16 +66,10 @@ export const HomePageFeature = () => {
                     type="button"
                     variant="primary"
                     size="md"
-                    suppressHydrationWarning
                     onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
-                        const result = handleAnalyze(e, dispatch, repositoryNameRef, githubTokenRef)
-                        if (Array.isArray(result) && result.length > 0) {
-                            console.log(result)
-                            setErrors(result)
-                        } else {
-                            setErrors([])
-                            // Call the server action to get the repository
-                            await getRepo(repositoryNameRef?.current?.value, githubTokenRef?.current?.value)
+                        const result = handleAnalyze(e, dispatch, value)
+                        if ( !(Array.isArray(result) && result.length > 0) ) {
+                           await getRepo(repositoryNameRef?.current?.value, githubTokenRef?.current?.value)
                         }
                     }}
                 >
@@ -80,14 +83,19 @@ export const HomePageFeature = () => {
                     size="md"
                     suppressHydrationWarning
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                        if (repositoryNameRef?.current) {
-                            repositoryNameRef.current.value = ''
-                        }
-                        if (githubTokenRef?.current) {
-                            githubTokenRef.current.value = ''
-                        }
-                        setErrors([])
-                        repositoryNameRef?.current?.focus()
+                        
+                            dispatch(setValue({
+                                repositoryName: '',
+                                githubToken: '',
+                                aiApiKey: '',
+                                aiModel: ''
+                            }))
+                            dispatch(setErrors({
+                                repositoryName: '',
+                                githubToken: '',
+                                aiApiKey: '',
+                                aiModel: ''
+                            }))
                     }}
                 >
                     Clear

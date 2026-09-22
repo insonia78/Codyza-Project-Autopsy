@@ -1,29 +1,39 @@
 'use client'
-import { setRepositoryName, setGitHubToken } from '@/lib/features/homepageslice';
+import { setErrors, setValue } from '@/lib/features/homepageslice';
 import schema from './validator'
 
 export function handleAnalyze(
     e: React.MouseEvent<HTMLButtonElement>,
     dispatch: any,
-    repositoryNameRef: any,
-    githubTokenRef: any
+    value: any,
 ) {
     e.preventDefault()
 
-    const repositoryName = repositoryNameRef?.current?.value ?? ''
-    const githubToken = githubTokenRef?.current?.value ?? ''
-
-    const errors = validateHomeForm({ repositoryName, githubToken })
+    const repositoryName = value.repositoryName?.current?.value ?? ''
+    const githubToken = value.githubToken?.current?.value ?? ''
+    const aiApiKey = value.aiApiKey?.current?.value ?? ''
+    const model = value.aiModel?.current?.value ?? ''
+    const errors = validateHomeForm({ repositoryName, githubToken, aiApiKey, model })
+    console.log(errors);
     if (errors.length > 0) {
+        dispatch(setErrors({
+          repositoryName: errors.find((e: string) => e.includes('Repository')),
+          githubToken: errors.find((e: string) => e.includes('GitHub token')),
+          aiApiKey: errors.find((e: string) => e.includes('AI API Key')),
+          aiModel: errors.find((e: string) => e.includes('Model'))
+        }))
          return errors
     }
-
-    dispatch(setRepositoryName(repositoryName))
-    dispatch(setGitHubToken(githubToken))
+    dispatch(setErrors({
+          repositoryName: '',
+          githubToken: '',
+          aiApiKey: '',
+          aiModel: ''
+        }))
     return []
 }
 
-export function validateHomeForm(values: { repositoryName?: string; githubToken?: string | null }) {
+export function validateHomeForm(values: { repositoryName?: string; githubToken?: string | null; aiApiKey?: string; model?: string }) {
   try {
     schema.validateSync(values, { abortEarly: false })
     return [] as string[]

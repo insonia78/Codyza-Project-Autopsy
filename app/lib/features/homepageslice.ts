@@ -3,27 +3,31 @@ import { createSlice } from '@reduxjs/toolkit';
 const homePageSlice = createSlice({
   name: 'homePage',
   initialState: {
-    repositoryName: '',
-    githubToken: '',
-    aiApiKey: '',
-    aiModel: ''
+    value:{
+      repositoryName: '',
+      githubToken: '',
+      aiApiKey: '',
+      aiModel: ''
+    },
+    
+    errors:{
+      repositoryName: '',
+      githubToken: '',
+      aiApiKey: '',
+      aiModel: ''
+    }
   },
   reducers: {
-    setRepositoryName(state, action) {
-      state.repositoryName = action.payload;
+    
+    setValue(state, action) {
+      state.value = action.payload;
     },
-    setGitHubToken(state, action) {
-      state.githubToken = action.payload;
-    }
-    ,
-    setAiApiKey(state, action) {
-      state.aiApiKey = action.payload;
-    },
-    setAiModel(state, action) {
-      state.aiModel = action.payload;
+    
+    setErrors(state, action) {
+      state.errors = action.payload;
     }
   }
 });
 
-export const { setRepositoryName, setGitHubToken, setAiApiKey, setAiModel } = homePageSlice.actions;
+export const { setErrors , setValue } = homePageSlice.actions;
 export default homePageSlice.reducer;

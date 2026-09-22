@@ -1,24 +1,10 @@
 'use server'
-
-
-import { validateHomeForm } from "../functions";
-import schema from "../validator";
 const headers: Record<string, string> = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28"
 }
 export async function getRepo(repositoryName: string | undefined, githubToken: string | undefined) {
-    const errors = validateHomeForm({ repositoryName, githubToken });
-    if (errors.length > 0) {
-        console.log(errors);
-        return errors;
-    }
-
-    const error = schema.validateSync({ repositoryName, githubToken }, { abortEarly: false });
-    //  if (error) {
-    //     console.log(error);
-    //     return error
-    //  }
+   
 
     if (typeof repositoryName === 'string') {
         const url: string = await repositoryName?.replace("https://github.com/", "https://api.github.com/repos/");
