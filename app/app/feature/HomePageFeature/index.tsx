@@ -6,7 +6,7 @@ import { handleAnalyze } from './functions'
 import Button from '@/app/components/Ui/Button'
 import { getRepo } from './server/actions'
 import { setErrors, setValue } from '@/lib/features/homepageslice'
-import { setValue as setAiHomePageValue } from '../../../lib/features/aihomepageslice'
+import { setValue as setAiHomePageValue, setLoading as setAiLoading } from '../../../lib/features/aihomepageslice'
 import { useAi } from '@/app/Home/AiProvider'
 
 
@@ -55,18 +55,22 @@ export const HomePageFeature = () => {
                     variant="primary"
                     size="md"
                     onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
-                        const result = handleAnalyze(e, dispatch, value)
-                        if ( !(Array.isArray(result) && result.length > 0) ) {
-                           const data:any = {
-                             repositoryName : value.repositoryNameRef.current?.value,
-                             githubToken : value.githubTokenRef.current?.value,
-                             aiApiKey : value.aiApiKeyRef.current?.value,
-                             aiModel : value.aiModelRef.current?.value
-                           }
-                            
-                           const aiAnalysis = await getRepo(data)
-                           dispatch(setAiHomePageValue({'aiAnalysis': aiAnalysis }))
-                        }
+                            const result = handleAnalyze(e, dispatch, value)
+                            if ( !(Array.isArray(result) && result.length > 0) ) {
+                                    const data:any = {
+                                        repositoryName : value.repositoryNameRef.current?.value,
+                                        githubToken : value.githubTokenRef.current?.value,
+                                        aiApiKey : value.aiApiKeyRef.current?.value,
+                                        aiModel : value.aiModelRef.current?.value
+                                    }
+                                    try {
+                                            dispatch(setAiLoading(true))
+                                            const aiAnalysis = await getRepo(data)
+                                            dispatch(setAiHomePageValue({'aiAnalysis': aiAnalysis }))
+                                    } finally {
+                                            dispatch(setAiLoading(false))
+                                    }
+                            }
                     }}
                 >
                     Analyze

@@ -10,6 +10,8 @@ const homePageSlice = createSlice({
     errors:{
       aiAnalysis:''
     }
+    ,
+    loading: false
   },
   reducers: {
     
@@ -20,8 +22,12 @@ const homePageSlice = createSlice({
     setErrors(state, action) {
       state.errors = action.payload;
     }
+    ,
+    setLoading(state, action) {
+      state.loading = action.payload;
+    }
   }
 });
 
-export const { setErrors , setValue } = homePageSlice.actions;
+export const { setErrors , setValue, setLoading } = homePageSlice.actions;
 export default homePageSlice.reducer;
