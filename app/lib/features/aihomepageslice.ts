@@ -1,20 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const homePageSlice = createSlice({
-  name: 'homePage',
+  name: 'aiHomePage',
   initialState: {
     value:{
-      repositoryName: '',
-      githubToken: '',
-      aiApiKey: '',
-      aiModel: ''
+     aiAnalysis:''
     },
     
     errors:{
-      repositoryName: '',
-      githubToken: '',
-      aiApiKey: '',
-      aiModel: ''
+      aiAnalysis:''
     }
   },
   reducers: {

@@ -1,24 +1,14 @@
 'use server'
-
-
-import { validateHomeForm } from "../functions";
-import schema from "../validator";
 const headers: Record<string, string> = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28"
 }
-export async function getRepo(repositoryName: string | undefined, githubToken: string | undefined) {
-    const errors = validateHomeForm({ repositoryName, githubToken });
-    if (errors.length > 0) {
-        console.log(errors);
-        return errors;
-    }
-
-    const error = schema.validateSync({ repositoryName, githubToken }, { abortEarly: false });
-    //  if (error) {
-    //     console.log(error);
-    //     return error
-    //  }
+export async function getRepo(value:any) {
+   
+    const repositoryName = value.repositoryName;
+    const githubToken = value.githubToken;
+    const aiApiKey = value.aiApiKey;
+    const aiModel = value.aiModel;
 
     if (typeof repositoryName === 'string') {
         const url: string = await repositoryName?.replace("https://github.com/", "https://api.github.com/repos/");
@@ -30,8 +20,8 @@ export async function getRepo(repositoryName: string | undefined, githubToken: s
             const res = await fetch(url.trim(), { headers })
             const data = await res.json();
 
-            await analyzeRepo(data);
-            return data;
+            return await analyzeRepo(data, aiApiKey, aiModel);
+        
         } catch (e) {
             console.log(e);
         }
@@ -39,7 +29,7 @@ export async function getRepo(repositoryName: string | undefined, githubToken: s
     }
 }
 
-async function analyzeRepo(repo: any) {
+async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: string | undefined) {
 
     try {
         const fullName: string = repo?.full_name || '';
@@ -159,7 +149,7 @@ async function analyzeRepo(repo: any) {
             ]
         };
 
-        const OPENAI_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY
+        const OPENAI_KEY = aiApiKey
         const ai:any = { analysis: null }
         if (OPENAI_KEY) {
             try {
@@ -182,14 +172,15 @@ async function analyzeRepo(repo: any) {
                 const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_KEY}` },
-                    body: JSON.stringify({ model: process.env.OPENAI_MODEL || 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 500 })
+                    body: JSON.stringify({ model: aiModel || 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 500 })
                 })
                 const openaiJson = await openaiRes.json()
                 ai.analysis = openaiJson?.choices?.[0]?.message?.content || JSON.stringify(openaiJson)
             } catch (e) {
                 ai.analysis = 'AI analysis failed: ' + (e as any).message
             }
-        }        
+        }  
+        
         return ai.analysis;    
     } catch (error) {
         console.error(error);

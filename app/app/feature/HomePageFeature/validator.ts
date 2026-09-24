@@ -1,3 +1,5 @@
+'use client'
+
 import * as yup from 'yup'
 
 const repoRegex = /^[^/\s]+\/[^^/\s]+$/
@@ -22,6 +24,20 @@ const schema = yup.object({
     .test('min-if-present', 'Token must be at least 10 characters', (val) => {
       if (!val) return true
       return val.length >= 10
+    }),
+  aiApiKey: yup
+    .string()
+    .required('AI API Key is required')
+    .test('min-if-present', 'AI API Key must be at least 10 characters', (val) => {
+      if (!val) return true
+      return val.length >= 10
+    }),
+  model: yup
+    .string()
+    .notRequired()
+    .test('min-if-present', 'Model must be at least 3 characters', (val) => {
+      if (!val) return true
+      return val.length >= 3
     }),
 })
 
