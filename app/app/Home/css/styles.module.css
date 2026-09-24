@@ -1,0 +1,77 @@
+.home-layout-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 100vh;
+  height: 100vh;
+}
+.home-layout-container > article{
+  flex: 1 1 auto;
+  width: auto;
+  min-height: 0; /* allow children to shrink and enable scrolling */
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+}
+.home-page-container {
+  min-height:14em;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  padding-left:5em;
+  flex: 0 0 auto; /* keep header/controls from stretching */
+}
+.row{
+  display:flex;
+  flex-direction:row;
+  align-items:flex-start;
+  gap:24px;
+  padding:16px;
+}
+
+.sidebar{
+  width:320px;
+  flex:0 0 320px;
+}
+
+/* Ensure the main section can shrink properly when space is limited */
+.home-page-container > section {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Responsive: stack sidebar above content on small screens */
+@media (max-width: 900px) {
+  .home-page-container {
+    flex-direction: column;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    gap: 1rem;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .home-layout-container > article {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 0 1rem 1rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-layout-container > article {
+    padding: 0.75rem;
+    margin: 0.5rem;
+  }
+  .home-page-container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+

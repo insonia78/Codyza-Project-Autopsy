@@ -1,28 +1,21 @@
 "use client"
 
 // import { setValue } from '@/lib/features/homepageslice';
-import { useAppSelector } from '../../../lib/hooks'
+import { useAppSelector, useAppStore } from '../../../lib/hooks'
 import { setValue} from '../../../lib/features/homepageslice'
 import {useRef,useEffect} from 'react';
+import { useAi } from '../../Home/AiProvider'
+
 
 export default function AiTokenFieldsComponent() {
-  
-  const aiApiKeyRef = useRef<HTMLInputElement | null>(null);
-  const modelRef = useRef<HTMLInputElement | null>(null);
-  // const dispatch = useAppDispatch();
+ 
+  const { aiApiKeyRef, aiModelRef } = useAi()
   const errors = useAppSelector(state => state.homePage.errors);
-  // const value = useAppSelector(state => state.homePage.value);
+  
 
   
 
-  useEffect(() => {
-    // This runs only on the client after hydration
-    
-     
-          setValue({ key: 'aiApiKey', value: aiApiKeyRef });
-          setValue({ key: 'aiModel', value: modelRef });
-     
-  }, []);
+  
  
   
   return (
@@ -40,7 +33,7 @@ export default function AiTokenFieldsComponent() {
         <label style={{ fontSize: 13 }}>Model</label>
         <input
         
-          ref={modelRef}
+          ref={aiModelRef}
           placeholder="e.g. gpt-4o-mini"
           style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #d1d5db' }}
         />

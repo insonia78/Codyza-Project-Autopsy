@@ -8,13 +8,13 @@ export function handleAnalyze(
     value: any,
 ) {
     e.preventDefault()
-
-    const repositoryName = value.repositoryName?.current?.value ?? ''
-    const githubToken = value.githubToken?.current?.value ?? ''
-    const aiApiKey = value.aiApiKey?.current?.value ?? ''
-    const model = value.aiModel?.current?.value ?? ''
+     
+    const repositoryName = value.repositoryNameRef?.current?.value ?? ''
+    const githubToken = value.githubTokenRef?.current?.value ?? ''
+    const aiApiKey = value.aiApiKeyRef?.current?.value ?? ''
+    const model = value.aiModelRef?.current?.value ?? ''
     const errors = validateHomeForm({ repositoryName, githubToken, aiApiKey, model })
-    console.log(errors);
+    
     if (errors.length > 0) {
         dispatch(setErrors({
           repositoryName: errors.find((e: string) => e.includes('Repository')),

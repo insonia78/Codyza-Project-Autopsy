@@ -1,33 +1,21 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './css/styles.module.css'
-import { useAppDispatch, useAppSelector } from '../../../lib/hooks'
+import { useAppDispatch, useAppSelector, useAppStore } from '../../../lib/hooks'
 import { handleAnalyze } from './functions'
 import Button from '@/app/components/Ui/Button'
 import { getRepo } from './server/actions'
 import { setErrors, setValue } from '@/lib/features/homepageslice'
-
+import { setValue as setAiHomePageValue } from '../../../lib/features/aihomepageslice'
+import { useAi } from '@/app/Home/AiProvider'
 
 
 export const HomePageFeature = () => {
-    const repositoryNameRef = useRef<HTMLInputElement | null>(null)
-    const githubTokenRef = useRef<HTMLInputElement | null>(null)
-    const value = useAppSelector((s) => s.homePage?.value || {})
+    const value = useAi();
+    const { repositoryNameRef, githubTokenRef } = value;
     const errors = useAppSelector((s) => s.homePage?.errors || {})
     const dispatch = useAppDispatch();
-    
-
-     useEffect(() => {
-         // This runs only on the client after hydration
-         
-          
-               setValue({ key: 'repositoryName', value: repositoryNameRef });
-               setValue({ key: 'githubToken', value: githubTokenRef });
-          
-       }, []);
-
-
-
+        
     return (
         <div className={styles['home-page-container']}>
             <div className={styles['repository-name-container']}>
@@ -69,7 +57,15 @@ export const HomePageFeature = () => {
                     onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
                         const result = handleAnalyze(e, dispatch, value)
                         if ( !(Array.isArray(result) && result.length > 0) ) {
-                           await getRepo(repositoryNameRef?.current?.value, githubTokenRef?.current?.value)
+                           const data:any = {
+                             repositoryName : value.repositoryNameRef.current?.value,
+                             githubToken : value.githubTokenRef.current?.value,
+                             aiApiKey : value.aiApiKeyRef.current?.value,
+                             aiModel : value.aiModelRef.current?.value
+                           }
+                            
+                           const aiAnalysis = await getRepo(data)
+                           dispatch(setAiHomePageValue({'aiAnalysis': aiAnalysis }))
                         }
                     }}
                 >

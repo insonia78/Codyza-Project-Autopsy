@@ -1,8 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import homePageReducer from './features/homepageslice'
+import aiHomePageReducer from './features/aihomepageslice'
 
 const rootReducer = combineReducers({
   homePage: homePageReducer,
+  aiHomePage: aiHomePageReducer
 })
 
 export const makeStore = () => {

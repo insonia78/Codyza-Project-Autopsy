@@ -34,7 +34,7 @@ const schema = yup.object({
     }),
   model: yup
     .string()
-    .required('Model is required')
+    .notRequired()
     .test('min-if-present', 'Model must be at least 3 characters', (val) => {
       if (!val) return true
       return val.length >= 3

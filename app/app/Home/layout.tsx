@@ -1,6 +1,9 @@
+import AiTokenFieldsComponent from "../components/AiTokenFieldsComponent"
+import AiResponseComponent from "../components/AiResponseComponent"
+import styles from "./css/styles.module.css"
+import { AiProvider } from "./AiProvider"
 
-import AiTokenFieldsComponent from '../components/AiTokenFieldsComponent'
-import styles from './styles.module.css'
+
 type Props = {
 	children: React.ReactNode
 }
@@ -8,11 +11,21 @@ type Props = {
 export default function HomeLayout({ children }: Props) {
 
 	return (
-		<section style={{ flex: 1 }}>
-				{children}
-		</section>
-		
-
+		<div className={styles['home-layout-container']}>
+			<AiProvider>
+				<div className={styles['home-page-container']}>
+					<aside>
+						<AiTokenFieldsComponent />
+					</aside>
+					<section style={{ flex: 1 }}>
+						{children}
+					</section>
+				</div>
+				<article style={{ flex: 1 }}>
+					<AiResponseComponent />
+				</article>
+			</AiProvider>
+		</div>
 
 	)
 }
