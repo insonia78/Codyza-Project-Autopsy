@@ -1,17 +1,18 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import styles from './css/styles.module.css'
-import { useAppDispatch, useAppSelector, useAppStore } from '../../../lib/hooks'
+import { useAppDispatch, useAppSelector } from '../../../lib/hooks'
 import { handleAnalyze } from './functions'
 import Button from '@/app/components/Ui/Button'
 import { getRepo } from './server/actions'
-import { setErrors, setValue } from '@/lib/features/homepageslice'
+import { setErrors } from '@/lib/features/homepageslice'
 import { setValue as setAiHomePageValue, setLoading as setAiLoading } from '../../../lib/features/aihomepageslice'
 import { useAi } from '@/app/Home/AiProvider'
 
 
 export const HomePageFeature = () => {
     const value = useAi();
+    const { reset } = value;
     const { repositoryNameRef, githubTokenRef } = value;
     const errors = useAppSelector((s) => s.homePage?.errors || {})
     const dispatch = useAppDispatch();
@@ -84,12 +85,7 @@ export const HomePageFeature = () => {
                     suppressHydrationWarning
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         
-                            dispatch(setValue({
-                                repositoryName: '',
-                                githubToken: '',
-                                aiApiKey: '',
-                                aiModel: ''
-                            }))
+                            reset()
                             dispatch(setErrors({
                                 repositoryName: '',
                                 githubToken: '',

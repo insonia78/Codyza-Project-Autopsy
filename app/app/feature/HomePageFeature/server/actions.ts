@@ -23,7 +23,8 @@ export async function getRepo(value:any) {
             return await analyzeRepo(data, aiApiKey, aiModel);
         
         } catch (e) {
-            console.log(e);
+            console.error("treow error occurred")
+            console.error(e);
         }
 
     }
