@@ -18,7 +18,7 @@ export function handleAnalyze(
     if (errors.length > 0) {
         dispatch(setErrors({
           repositoryName: errors.find((e: string) => e.includes('Repository')),
-          githubToken: errors.find((e: string) => e.includes('GitHub token')),
+          githubToken: errors.find((e: string) => e.includes('GitHub token') || e.includes('Token')),
           aiApiKey: errors.find((e: string) => e.includes('AI API Key')),
           aiModel: errors.find((e: string) => e.includes('Model'))
         }))
