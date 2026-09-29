@@ -1,7 +1,13 @@
 'use server'
-const headers: Record<string, string> = {
-    "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28"
+function buildGithubHeaders(githubToken?: string): Record<string, string> {
+    const headers: Record<string, string> = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+    if (githubToken) {
+        headers["Authorization"] = `Bearer ${githubToken}`;
+    }
+    return headers;
 }
 export async function getRepo(value:any) {
    
@@ -14,13 +20,11 @@ export async function getRepo(value:any) {
         const url: string = await repositoryName?.replace("https://github.com/", "https://api.github.com/repos/");
         try {
 
-            if (githubToken) {
-                headers["Authorization"] = `Bearer ${githubToken}`;
-            }
+            const headers = buildGithubHeaders(githubToken);
             const res = await fetch(url.trim(), { headers })
             const data = await res.json();
 
-            return await analyzeRepo(data, aiApiKey, aiModel);
+            return await analyzeRepo(data, aiApiKey, aiModel, headers);
         
         } catch (e) {
             console.error("treow error occurred")
@@ -30,7 +34,7 @@ export async function getRepo(value:any) {
     }
 }
 
-async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: string | undefined) {
+async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: string | undefined, headers: Record<string, string>) {
 
     try {
         const fullName: string = repo?.full_name || '';
@@ -39,11 +43,11 @@ async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: stri
 
 
         // Parallel fetches for languages, contributors, tree, commits, issues
-        const languagesP = fetchJson((repo as any).languages_url);
-        const contributorsP = fetchJson((repo as any).contributors_url + '?per_page=100');
-        const treeP = fetchJson(`https://api.github.com/repos/${owner}/${name}/git/trees/${defaultBranch}?recursive=1`);
-        const commitsP = fetchJson(`https://api.github.com/repos/${owner}/${name}/commits?per_page=100`);
-        const issuesP = fetchJson(`https://api.github.com/repos/${owner}/${name}/issues?state=open&per_page=100`);
+        const languagesP = fetchJson((repo as any).languages_url, headers);
+        const contributorsP = fetchJson((repo as any).contributors_url + '?per_page=100', headers);
+        const treeP = fetchJson(`https://api.github.com/repos/${owner}/${name}/git/trees/${defaultBranch}?recursive=1`, headers);
+        const commitsP = fetchJson(`https://api.github.com/repos/${owner}/${name}/commits?per_page=100`, headers);
+        const issuesP = fetchJson(`https://api.github.com/repos/${owner}/${name}/issues?state=open&per_page=100`, headers);
 
         const [languages, contributors, tree, commits, issues] = await Promise.all([languagesP, contributorsP, treeP, commitsP, issuesP]);
 
@@ -64,7 +68,7 @@ async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: stri
         // Attempt to load package.json if present to extract dependencies
         let packageJson: any = null;
         if (fileList.includes('package.json')) {
-            const pkgRes: any = await fetchJson(`https://api.github.com/repos/${owner}/${name}/contents/package.json`);
+            const pkgRes: any = await fetchJson(`https://api.github.com/repos/${owner}/${name}/contents/package.json`, headers);
             if (pkgRes) {
                 try {
                     const buff = Buffer.from(pkgRes?.content, pkgRes?.encoding || 'base64');
@@ -188,7 +192,7 @@ async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: stri
     }
 
 }
-async function fetchJson(url: any) {
+async function fetchJson(url: any, headers: Record<string, string>) {
     const response = await fetch(url.trim(), { headers });
     return response.json();
 
