@@ -12,8 +12,7 @@ body {
 html, body, #__next {
   width: 100%;
   
-  overflow-x: hidden; /* disallow horizontal overflow */
-  overflow-y: auto;   /* allow vertical scrolling on document */
+  
 }
 
 /* Make box-sizing predictable across elements */
