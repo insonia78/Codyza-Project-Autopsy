@@ -30,7 +30,9 @@ function githubRepoApiUrl(repositoryName: string): string | undefined {
             return;
         }
 
-        return `https://api.github.com/repos/${repository[1]}/${repository[2]}`;
+        const owner = encodeURIComponent(repository[1]);
+        const name = encodeURIComponent(repository[2]);
+        return `https://api.github.com/repos/${owner}/${name}`;
     } catch {
         return;
     }
