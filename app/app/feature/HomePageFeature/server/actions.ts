@@ -25,11 +25,12 @@ function githubRepoApiUrl(repositoryName: string): string | undefined {
         }
 
         const path = url.pathname.replace(/\/+$/, '');
-        if (!/^\/[^/]+\/[^/]+$/.test(path)) {
+        const repository = /^\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)$/.exec(path);
+        if (!repository) {
             return;
         }
 
-        return `https://api.github.com/repos${path}`;
+        return `https://api.github.com/repos/${repository[1]}/${repository[2]}`;
     } catch {
         return;
     }
