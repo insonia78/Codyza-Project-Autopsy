@@ -28,3 +28,6 @@ jobs:
 
       - name: Run Vitest suite
         run: npm test
+
+      - name: Type check (same check `next build` runs)
+        run: npm run typecheck

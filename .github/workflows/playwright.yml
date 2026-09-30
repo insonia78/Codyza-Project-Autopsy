@@ -10,6 +10,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+        NEXT_PUBLIC_PLAYWRIGHT_URL: "https://codyza-project-autopsy.vercel.app/"        
     defaults:
       run:
         working-directory: app
