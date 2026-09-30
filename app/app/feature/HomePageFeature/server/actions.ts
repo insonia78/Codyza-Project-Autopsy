@@ -19,8 +19,6 @@ export async function getRepo(value:any) {
     if (typeof repositoryName === 'string') {
         const url: string = await repositoryName?.replace("https://github.com/", "https://api.github.com/repos/");
         try {
-            const requestHeaders: Record<string, string> = { ...defaultHeaders }
-
             const headers = buildGithubHeaders(githubToken);
             const res = await fetch(url.trim(), { headers })
             const data = await res.json();
@@ -197,4 +195,3 @@ async function fetchJson(url: any, headers: Record<string, string>) {
     return response.json();
 
 }
-
