@@ -1,3 +1,5 @@
+/// <reference types="vitest/globals" />
+
 import { setErrors } from '@/lib/features/homepageslice'
 
 import { handleAnalyze, validateHomeForm } from './functions'
@@ -51,7 +53,7 @@ describe('handleAnalyze', () => {
       createValue({ repositoryName: '', githubToken: 'short', aiApiKey: '', aiModel: 'go' })
     )
 
-    expect(preventDefault).toHaveBeenCalledOnce()
+    expect(preventDefault).toHaveBeenCalledTimes(1)
     expect(result).toEqual([
       'Repository is required',
       'Repository must be in "owner/repo" format or a github.com URL',
@@ -84,7 +86,7 @@ describe('handleAnalyze', () => {
       })
     )
 
-    expect(preventDefault).toHaveBeenCalledOnce()
+    expect(preventDefault).toHaveBeenCalledTimes(1)
     expect(result).toEqual([])
     expect(dispatch).toHaveBeenCalledWith(
       setErrors({

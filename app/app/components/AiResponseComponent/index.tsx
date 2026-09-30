@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useAppSelector } from '../../../lib/hooks'
 import Button from '../Ui/Button'
+import styles from './css/styles.module.css'
 
 function escapeHtml(str: string) {
   return str
@@ -70,7 +71,10 @@ const AiResponseComponent = () => {
     }, [value?.aiAnalysis])
 
     return (
-        <div aria-labelledby="ai-analysis-heading" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, position: 'relative', paddingTop: 40 }}>
+        <div aria-labelledby="ai-analysis-heading" 
+        className={styles['ai-out-put-container']} 
+        >
+        
             {loading ? (
                 <div aria-busy="true" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                     <div style={{ padding: '0.5rem 1rem' }}>Loading analysis…</div>
@@ -86,18 +90,7 @@ const AiResponseComponent = () => {
                         id="ai-analysis"
                         ref={textareaRef}
                         readOnly
-                        value={getContent()}
-                        style={{
-                            width: '80%',
-                            resize: 'vertical',
-                            border: 'none',
-                            outline: 'none',
-                            fontFamily: 'inherit',
-                            fontSize: '1rem',
-                            background: 'transparent',
-                            overflowY: 'auto',
-                            height: '40%',
-                        }}
+                        value={getContent()}                        
                     />
                 </>
             )}

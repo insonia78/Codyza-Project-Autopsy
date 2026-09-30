@@ -56,4 +56,22 @@ describe('getRepo', () => {
     expect(auth.length).toBeGreaterThan(1)
     auth.forEach((value) => expect(value).toBeUndefined())
   })
+
+  it('accepts owner/repo input', async () => {
+    const fetchMock = mockGithubFetch()
+    vi.stubGlobal('fetch', fetchMock)
+
+    await getRepo({ repositoryName: 'owner/repo' })
+
+    expect(fetchMock.mock.calls[0][0]).toBe('https://api.github.com/repos/owner/repo')
+  })
+
+  it('does not fetch repository URLs outside github.com', async () => {
+    const fetchMock = mockGithubFetch()
+    vi.stubGlobal('fetch', fetchMock)
+
+    await getRepo({ repositoryName: 'https://example.com/owner/repo' })
+
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
 })

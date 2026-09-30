@@ -9,6 +9,35 @@ function buildGithubHeaders(githubToken?: string): Record<string, string> {
     }
     return headers;
 }
+
+function githubRepoApiUrl(repositoryName: string): string | undefined {
+    const value = repositoryName.trim();
+    const candidate = value.includes('://') ? value : `https://github.com/${value}`;
+
+    try {
+        const url = new URL(candidate);
+        if (
+            url.origin !== 'https://github.com' ||
+            url.username ||
+            url.password
+        ) {
+            return;
+        }
+
+        const path = url.pathname.replace(/\/+$/, '');
+        const repository = /^\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)$/.exec(path);
+        if (!repository) {
+            return;
+        }
+
+        const owner = encodeURIComponent(repository[1]);
+        const name = encodeURIComponent(repository[2]);
+        return `https://api.github.com/repos/${owner}/${name}`;
+    } catch {
+        return;
+    }
+}
+
 export async function getRepo(value:any) {
    
     const repositoryName = value.repositoryName;
@@ -17,9 +46,10 @@ export async function getRepo(value:any) {
     const aiModel = value.aiModel;
 
     if (typeof repositoryName === 'string') {
-        const url: string = await repositoryName?.replace("https://github.com/", "https://api.github.com/repos/");
-        try {
+        const url = githubRepoApiUrl(repositoryName);
+        if (!url) return;
 
+        try {
             const headers = buildGithubHeaders(githubToken);
             const res = await fetch(url.trim(), { headers })
             const data = await res.json();
@@ -27,8 +57,7 @@ export async function getRepo(value:any) {
             return await analyzeRepo(data, aiApiKey, aiModel, headers);
         
         } catch (e) {
-            console.error("treow error occurred")
-            console.error(e);
+            console.error('Repository analysis request failed')
         }
 
     }
@@ -188,7 +217,7 @@ async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: stri
         
         return ai.analysis;    
     } catch (error) {
-        console.error(error);
+        console.error('Repository analysis failed');
     }
 
 }
@@ -197,4 +226,3 @@ async function fetchJson(url: any, headers: Record<string, string>) {
     return response.json();
 
 }
-
