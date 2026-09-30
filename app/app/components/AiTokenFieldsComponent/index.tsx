@@ -22,7 +22,7 @@ export default function AiTokenFieldsComponent() {
     <aside style={{ width: 320, padding: 16, borderLeft: '1px solid #e5e7eb', borderRadius: 6, background: '#fafafa' }}>
       <h3 style={{ marginTop: 0, marginBottom: 8 }}>AI Settings</h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <label style={{ fontSize: 13 }}>OpenAI API Key</label>
+        <label style={{ fontSize: 13 }}>OpenAI API Key ( Required)</label>
         <input
           
           ref={aiApiKeyRef}

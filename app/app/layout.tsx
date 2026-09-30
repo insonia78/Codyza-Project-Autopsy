@@ -30,7 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h1 style={{ margin: 0, fontSize: 20 }}>Codyza — Repo Analyzer</h1>
             <nav aria-label="Main navigation">
-              <Link href="/" style={{ marginLeft: 12, color: '#2563eb', textDecoration: 'none' }}>Home</Link>
+              <Link href="/" style={{ marginLeft: 12, color: '#2563eb', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.5em' }}>Home</Link>
             </nav>
           </div>
         </header>

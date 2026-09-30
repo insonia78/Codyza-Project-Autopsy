@@ -1,3 +1,5 @@
+/// <reference types="vitest/globals" />
+
 import { Provider } from 'react-redux'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -7,11 +9,7 @@ import { makeStore } from '@/lib/store'
 
 import { HomePageFeature } from './index'
 
-const getRepoMock = vi.fn()
-
-vi.mock('./server/actions', () => ({
-  getRepo: (...args: unknown[]) => getRepoMock(...args),
-}))
+const fetchMock = vi.fn()
 
 function renderFeature() {
   const store = makeStore()
@@ -30,7 +28,12 @@ function renderFeature() {
 
 describe('HomePageFeature integration', () => {
   beforeEach(() => {
-    getRepoMock.mockReset()
+    fetchMock.mockReset()
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   it('shows validation errors and avoids the server action when fields are invalid', async () => {
@@ -40,25 +43,31 @@ describe('HomePageFeature integration', () => {
 
     expect(await screen.findByText('Repository is required')).toBeTruthy()
     expect(screen.getByText('AI API Key is required')).toBeTruthy()
-    expect(getRepoMock).not.toHaveBeenCalled()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('submits valid values and stores the AI analysis result', async () => {
     const { store } = renderFeature()
-    getRepoMock.mockResolvedValueOnce({ summary: 'analysis complete' })
+    fetchMock.mockResolvedValueOnce({
+      json: async () => ({ aiAnalysis: { summary: 'analysis complete' } }),
+    })
 
-    fireEvent.change(screen.getByLabelText('Repository name'), { target: { value: 'owner/repo' } })
-    fireEvent.change(screen.getByLabelText('GitHub token'), { target: { value: 'ghp_1234567890' } })
+    fireEvent.change(screen.getByLabelText('Repository name (Required)'), { target: { value: 'owner/repo' } })
+    fireEvent.change(screen.getByLabelText('GitHub token (Optional)'), { target: { value: 'ghp_1234567890' } })
     fireEvent.change(screen.getByPlaceholderText('sk-...'), { target: { value: 'apikey-12345' } })
     fireEvent.change(screen.getByPlaceholderText('e.g. gpt-4o-mini'), { target: { value: 'gpt-4o-mini' } })
     fireEvent.click(screen.getByRole('button', { name: 'Analyze' }))
 
     await waitFor(() => {
-      expect(getRepoMock).toHaveBeenCalledWith({
-        repositoryName: 'owner/repo',
-        githubToken: 'ghp_1234567890',
-        aiApiKey: 'apikey-12345',
-        aiModel: 'gpt-4o-mini',
+      expect(fetchMock).toHaveBeenCalledWith('/api/repo-analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repositoryName: 'owner/repo',
+          githubToken: 'ghp_1234567890',
+          aiApiKey: 'apikey-12345',
+          aiModel: 'gpt-4o-mini',
+        }),
       })
     })
     await waitFor(() => {
@@ -69,8 +78,8 @@ describe('HomePageFeature integration', () => {
 
   it('clears user input and form errors', async () => {
     const { store } = renderFeature()
-    const repository = screen.getByLabelText('Repository name') as HTMLInputElement
-    const token = screen.getByLabelText('GitHub token') as HTMLInputElement
+    const repository = screen.getByLabelText('Repository name (Required)') as HTMLInputElement
+    const token = screen.getByLabelText('GitHub token (Optional)') as HTMLInputElement
 
     fireEvent.change(repository, { target: { value: 'bad value' } })
     fireEvent.change(token, { target: { value: 'short' } })

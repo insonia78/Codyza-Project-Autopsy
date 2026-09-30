@@ -1,10 +1,13 @@
 .home-layout-container {
+  margin-top:1.5em;
   display: flex;
   width:100%;
   flex-direction: column;
+  gap:2em;
   align-items: center;
   justify-content: center;
   height: auto;
+  font-size: 1.5em;
 }
 .home-layout-container > article{
   flex: 1 1 auto;
@@ -22,57 +25,22 @@
   display: flex;
   flex-direction: row;
   padding-left:5em;
-  flex: 0 0 auto; /* keep header/controls from stretching */
+  gap:2em;
+  flex: 0 0 auto; 
 }
-.row{
-  display:flex;
-  flex-direction:row;
-  align-items:flex-start;
-  gap:24px;
-  padding:16px;
-}
-
-.sidebar{
-  width:320px;
-  flex:0 0 320px;
-}
-
 /* Ensure the main section can shrink properly when space is limited */
 .home-page-container > section {
+  display: flex;
+  flex-direction: row;
   flex: 1 1 auto;
   min-width: 0;
+ 
 }
 
-/* Responsive: stack sidebar above content on small screens */
-/* @media (max-width: 900px) {
+@media (max-width: 1110px) {
   .home-page-container {
-    flex-direction: column;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    gap: 1rem;
-  }
-
-  .sidebar {
-    width: 100%;
-    flex: 0 0 auto;
-  }
-
-  .home-layout-container > article {
-    width: 100%;
-    padding: 1rem;
-    border-radius: 6px;
-    margin: 0 1rem 1rem 1rem;
-  }
+  
+  flex-direction: column;
+  
+ }
 }
-
-@media (max-width: 480px) {
-  .home-layout-container > article {
-    padding: 0.75rem;
-    margin: 0.5rem;
-  }
-  .home-page-container {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-} */
-

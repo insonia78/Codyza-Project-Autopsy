@@ -1,5 +1,5 @@
 'use server'
-const headers: Record<string, string> = {
+const defaultHeaders: Record<string, string> = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28"
 }
@@ -13,18 +13,18 @@ export async function getRepo(value:any) {
     if (typeof repositoryName === 'string') {
         const url: string = await repositoryName?.replace("https://github.com/", "https://api.github.com/repos/");
         try {
+            const requestHeaders: Record<string, string> = { ...defaultHeaders }
 
             if (githubToken) {
-                headers["Authorization"] = `Bearer ${githubToken}`;
+                requestHeaders["Authorization"] = `Bearer ${githubToken}`;
             }
-            const res = await fetch(url.trim(), { headers })
+            const res = await fetch(url.trim(), { headers: requestHeaders })
             const data = await res.json();
 
             return await analyzeRepo(data, aiApiKey, aiModel);
         
         } catch (e) {
-            console.error("treow error occurred")
-            console.error(e);
+            console.error('Repository analysis request failed')
         }
 
     }
@@ -184,12 +184,12 @@ async function analyzeRepo(repo: any,aiApiKey: string | undefined, aiModel: stri
         
         return ai.analysis;    
     } catch (error) {
-        console.error(error);
+        console.error('Repository analysis failed');
     }
 
 }
 async function fetchJson(url: any) {
-    const response = await fetch(url.trim(), { headers });
+    const response = await fetch(url.trim(), { headers: defaultHeaders });
     return response.json();
 
 }

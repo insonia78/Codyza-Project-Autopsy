@@ -1,3 +1,5 @@
+/// <reference types="vitest/globals" />
+
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { AiProvider, useAi } from './AiProvider'

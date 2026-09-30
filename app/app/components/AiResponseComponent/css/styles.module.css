@@ -1,0 +1,27 @@
+.ai-out-put-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: 1em;
+    padding-top: 1em;
+    flex:1;
+
+}
+.ai-out-put-container textarea {
+    width: 100%;
+    min-height: 8em;
+    resize: vertical;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 1.3em;
+    background: transparent;
+    overflow-y: auto;
+}
+
+@media (min-height: 700px) {
+    .ai-out-put-container textarea {
+        min-height: 40vh;
+        max-height: 40vh;
+    }
+}
